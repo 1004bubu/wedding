@@ -92,7 +92,7 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
 // 3. 캘린더 + D-Day
 // ═══════════════════════════════════════════════════════════════════
 {
-  const { year, month, day, hour, minute } = C.wedding.date;
+  const { year, month, day } = C.wedding.date;
 
   // 달력 그리기
   const firstDay = new Date(year, month, 1).getDay();
@@ -116,21 +116,22 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
   }
   qs('#cal-weeks').innerHTML = html;
 
-  // D-Day 계산
-  const target = new Date(year, month, day, hour, minute);
-  const diff = target - new Date();
+  // D-Day 계산 (시각 무시, 달력 날짜 기준)
+  const target = new Date(year, month, day);
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const dDiff = Math.round((target - today) / 864e5);
   const ddEl = qs('#dday');
   const sentEl = qs('#dday-sentence');
 
-  if (diff > 0) {
-    const d = Math.ceil(diff / 864e5);
-    ddEl.textContent = `D - ${d}`;
-    sentEl.textContent = `${d}일 남았습니다`;
-  } else if (diff >= -60000) {
+  if (dDiff > 0) {
+    ddEl.textContent = `D - ${dDiff}`;
+    sentEl.textContent = `${dDiff}일 남았습니다`;
+  } else if (dDiff === 0) {
     ddEl.textContent = 'D - Day';
     sentEl.textContent = '오늘입니다!';
   } else {
-    const d = Math.floor(-diff / 864e5);
+    const d = -dDiff;
     ddEl.textContent = `D + ${d}`;
     sentEl.textContent = `행복한 ${d}일이 지났습니다`;
   }
