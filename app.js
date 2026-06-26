@@ -144,12 +144,10 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
   const grid = qs('#gallery-grid');
   let lbIdx = 0;
 
-  // 이미지 저장 방지(억제): 우클릭·드래그 저장 차단 (완전 차단은 불가)
-  const noSave = el => {
-    el.draggable = false;
-    el.addEventListener('contextmenu', e => e.preventDefault());
-    el.addEventListener('dragstart', e => e.preventDefault());
-  };
+  // 이미지 저장 방지(억제): 우클릭 메뉴·드래그 차단 (완전 차단은 불가)
+  // + 이미지에 pointer-events:none 를 줘 iOS 길게 눌러 저장 메뉴를 차단한다.
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('dragstart', e => e.preventDefault());
 
   // 파일명 'N-M' 기준으로 넘버 세트별 장수 집계 → 1장뿐인 세트는 행 전체 너비로 배치
   const groupOf = src => { const m = src.match(/\/(\d+)-\d+\.[^./]+$/); return m ? m[1] : src; };
@@ -170,28 +168,28 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
     const img = document.createElement('img');
     img.src = src; img.alt = `갤러리 ${i + 1}`;
     img.loading = 'lazy'; img.decoding = 'async';
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;';
+    // pointer-events:none → 터치/마우스가 이미지에 직접 닿지 않아 iOS 길게눌러 저장 차단
+    img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;';
     const pos = focus[nameOf(src)];
     if (pos) img.style.objectPosition = pos;   // 지정 없으면 기본 중앙(50% 50%)
-    noSave(img);
     img.onerror = () => { img.src = PH; };
-    img.addEventListener('mouseenter', () => { img.style.transform = 'scale(1.06)'; });
-    img.addEventListener('mouseleave', () => { img.style.transform = ''; });
 
     wrap.appendChild(img);
+    wrap.addEventListener('mouseenter', () => { img.style.transform = 'scale(1.06)'; });
+    wrap.addEventListener('mouseleave', () => { img.style.transform = ''; });
     wrap.addEventListener('click', () => openLb(i));
     grid.appendChild(wrap);
   });
 
   // 라이트박스
   const lb = document.createElement('div');
-  lb.style.cssText = 'display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.93);touch-action:none;';
+  lb.style.cssText = 'display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.93);';
   lb.innerHTML = `
     <button aria-label="닫기" id="lb-x" style="position:absolute;top:14px;right:16px;background:none;border:none;color:#fff;font-size:34px;cursor:pointer;line-height:1;padding:8px;">×</button>
     <button aria-label="이전" id="lb-prev" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.18);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:26px;cursor:pointer;">‹</button>
     <button aria-label="다음" id="lb-next" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.18);border:none;color:#fff;width:44px;height:44px;border-radius:50%;font-size:26px;cursor:pointer;">›</button>
     <div id="lb-center" style="height:100%;display:flex;align-items:center;justify-content:center;">
-      <img id="lb-img" src="" alt="" style="max-width:94vw;max-height:88vh;object-fit:contain;border-radius:6px;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;">
+      <img id="lb-img" src="" alt="" style="max-width:94vw;max-height:88vh;object-fit:contain;border-radius:6px;pointer-events:none;-webkit-user-select:none;user-select:none;-webkit-user-drag:none;-webkit-touch-callout:none;">
     </div>
     <div id="lb-count" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);color:rgba(255,255,255,.6);font-family:'Nanum Myeongjo',serif;font-size:13px;pointer-events:none;"></div>
   `;
@@ -199,12 +197,6 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
 
   const lbImg = qs('#lb-img', lb);
   const lbCount = qs('#lb-count', lb);
-  noSave(lbImg);
-
-  // 라이트박스 내 핀치 줌 차단 (iOS Safari gesture 이벤트 + 멀티터치)
-  ['gesturestart', 'gesturechange', 'gestureend'].forEach(ev =>
-    lb.addEventListener(ev, e => e.preventDefault()));
-  lb.addEventListener('touchmove', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
 
   function showLb() {
     lbImg.src = C.images.gallery[lbIdx];
