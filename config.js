@@ -35,20 +35,37 @@ window.WEDDING_CONFIG = {
       'images/gallery/07.jpg',
       'images/gallery/08.jpg',
       'images/gallery/09.jpg',
+      'images/gallery/10.jpg',
+      'images/gallery/11.jpg',
+      'images/gallery/12.jpg',
+      'images/gallery/13.jpg',
+      'images/gallery/14.jpg',
+      'images/gallery/15.jpg',
+      'images/gallery/16.jpg',
+      'images/gallery/17.jpg',
+      'images/gallery/18.jpg',
+      'images/gallery/19.jpg',
+      'images/gallery/20.jpg',
+      'images/gallery/21.jpg',
+      'images/gallery/22.jpg',
+      'images/gallery/23.jpg',
+      'images/gallery/24.jpg',
+      'images/gallery/25.jpg',
+      'images/gallery/26.jpg',
+      'images/gallery/27.jpg',
     ],
   },
 
   /* ── 연락처 ─────────────────────────────────────────────────────────
    *  신랑·신부 : 카카오 개인링크(kakao) 우선 노출. ID 미정이면 빈 값으로 두세요.
-   *  부모님    : 전화(tel)·문자(sms) 버튼.
-   *  ⚠️ 현재 전화번호는 예시(010-1004-xxxx)입니다. 실제 번호로 교체하세요. */
+   *  부모님    : 전화(tel)·문자(sms) 버튼. */
   contacts: [
-    { role: '신랑',      name: '우강희', kakao: '' /* ⚠️ 신랑 카카오 개인링크 URL */, tel: '010-1004-0001' },
-    { role: '신랑 아버지', name: '우성호', tel: '010-1004-0002' },
-    { role: '신랑 어머니', name: '이혜순', tel: '010-1004-0003' },
-    { role: '신부',      name: '최하영', kakao: '' /* ⚠️ 신부 카카오 개인링크 URL */, tel: '010-1004-0004' },
-    { role: '신부 아버지', name: '최칠범', tel: '010-1004-0005' },
-    { role: '신부 어머니', name: '전주현', tel: '010-1004-0006' },
+    { role: '신랑',      name: '우강희', kakao: 'http://qr.kakao.com/talk/bT1ymXLOERw8LqfIDixNVqO65e0-', tel: '010-4793-9254' },
+    { role: '신랑 아버지', name: '우성호', tel: '010-9135-9949' },
+    { role: '신랑 어머니', name: '이혜순', tel: '010-9424-5187' },
+    { role: '신부',      name: '최하영', kakao: 'http://qr.kakao.com/talk/pxR4CJmisDhjQp1dxVNn5O3XjyI-', tel: '010-9991-9523' },
+    { role: '신부 아버지', name: '최칠범', tel: '010-5331-0862' },
+    { role: '신부 어머니', name: '전주현', tel: '010-4899-9523' },
   ],
 
   /* ── 혼주 표기 (인사말 하단) ──────────────────────────────────────── */
@@ -58,18 +75,17 @@ window.WEDDING_CONFIG = {
   ],
 
   /* ── 마음 전하실 곳 (계좌) ───────────────────────────────────────────
-   *  ⚠️ 확인 중 — bank/number 가 비어 있으면 '준비 중'으로 표시되고 복사 버튼은 숨겨집니다.
-   *  확정되면 bank, number 만 채우면 됩니다. */
+   *  bank/number 가 비어 있으면 '준비 중'으로 표시되고 복사 버튼은 숨겨집니다. */
   accounts: {
     groom: [
-      { relation: '신랑',   holder: '우강희', bank: '', number: '' },
-      { relation: '아버지', holder: '우성호', bank: '', number: '' },
-      { relation: '어머니', holder: '이혜순', bank: '', number: '' },
+      { relation: '신랑',   holder: '우강희', bank: '농협은행', number: '30217744383113' },
+      { relation: '아버지', holder: '우성호', bank: '농협은행', number: '58512011425' },
+      { relation: '어머니', holder: '이혜순', bank: '농협은행', number: '22503651207555' },
     ],
     bride: [
-      { relation: '신부',   holder: '최하영', bank: '', number: '' },
-      { relation: '아버지', holder: '최칠범', bank: '', number: '' },
-      { relation: '어머니', holder: '전주현', bank: '', number: '' },
+      { relation: '신부',   holder: '최하영', bank: '케이뱅크', number: '100217666514' },
+      { relation: '아버지', holder: '최칠범', bank: '국민은행', number: '044210914324' },
+      { relation: '어머니', holder: '전주현', bank: '국민은행', number: '044240572524' },
     ],
   },
 
@@ -78,9 +94,9 @@ window.WEDDING_CONFIG = {
     name: '루이비스 웨딩 중구',
     address: '서울시 중구 청파로 463 한국경제신문사 18층',
     tel: '02-312-6800',
-    // 카카오맵 지오코딩 실패 시 사용할 예비 좌표 (대략값 — 정확 좌표로 교체 권장)
-    lat: 37.5596,
-    lng: 126.9676,
+    // 카카오맵 지오코딩 실패 시 사용할 예비 좌표
+    lat: 37.56060023904431,
+    lng: 126.96735289698235,
     // 길찾기 버튼 (앱키 불필요)
     kakaoUrl: 'https://map.kakao.com/?q=' + encodeURIComponent('루이비스웨딩 중구점'),
     naverUrl: 'https://map.naver.com/v5/search/' + encodeURIComponent('루이비스웨딩 중구'),
@@ -92,7 +108,7 @@ window.WEDDING_CONFIG = {
    *          + 플랫폼 > Web 에 배포 도메인 등록 필요 (예: https://계정.github.io)
    *  비어 있으면 지도 임베드 대신 길찾기 버튼만 노출됩니다. */
   kakao: {
-    jsKey: '', // ⚠️ 카카오 JavaScript 앱키
+    jsKey: '8410b0ab71c5776ce46d957a70595387', // 카카오 JavaScript 앱키
   },
 
   /* ── Firebase (방명록 · 참석 의사) ─────────────────────────────────────
@@ -100,12 +116,13 @@ window.WEDDING_CONFIG = {
    *  비어 있으면 '미리보기 모드'로 동작합니다(예시 데이터 표시, 저장은 안 됨).
    *  값을 채우면 Firestore(guestbook / rsvp 컬렉션)에 실제 저장됩니다. */
   firebase: {
-    apiKey: '',
-    authDomain: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
+    apiKey: "AIzaSyB06JePQpwYjrSEUg5R4pN5qydY42FP4fk",
+    authDomain: "wedding-dc19a.firebaseapp.com",
+    projectId: "wedding-dc19a",
+    storageBucket: "wedding-dc19a.firebasestorage.app",
+    messagingSenderId: "196587293260",
+    appId: "1:196587293260:web:e751d7d9e54b09551802e9",
+    measurementId: "G-W93TV0FY32"
   },
 
   /* ── 배경음악(선택) ────────────────────────────────────────────────────
