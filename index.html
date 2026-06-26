@@ -308,7 +308,7 @@
   </footer>
 
   <!-- BGM 토글 (config.bgmSrc 있을 때만 JS가 표시) -->
-  <button id="bgm-toggle" aria-label="배경음악" style="display:none; position:fixed; right:calc(50% - 210px); bottom:24px; z-index:40; width:46px; height:46px; border-radius:50%; border:none; background:#6E7B45; color:#fff; cursor:pointer; align-items:center; justify-content:center; animation:floatPulse 2.6s ease-in-out infinite;">
+  <button id="bgm-toggle" aria-label="배경음악" style="display:none; position:fixed; right:max(calc(16px + env(safe-area-inset-right, 0px)), calc(50% - 210px)); bottom:calc(24px + env(safe-area-inset-bottom, 0px)); z-index:40; width:46px; height:46px; border-radius:50%; border:none; background:#6E7B45; color:#fff; cursor:pointer; align-items:center; justify-content:center; animation:floatPulse 2.6s ease-in-out infinite;">
     <svg id="bgm-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle><line x1="3" y1="3" x2="21" y2="21" stroke-width="1.6"></line></svg>
   </button>
   <audio id="bgm-audio" loop preload="none"></audio>
