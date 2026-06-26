@@ -60,10 +60,10 @@ window.WEDDING_CONFIG = {
    *  신랑·신부 : 카카오 개인링크(kakao) 우선 노출. ID 미정이면 빈 값으로 두세요.
    *  부모님    : 전화(tel)·문자(sms) 버튼. */
   contacts: [
-    { role: '신랑',      name: '우강희', kakao: 'http://qr.kakao.com/talk/bT1ymXLOERw8LqfIDixNVqO65e0-', tel: '010-4793-9254' },
+    { role: '신랑',      name: '우강희', tel: '010-4793-9254' },
     { role: '신랑 아버지', name: '우성호', tel: '010-9135-9949' },
     { role: '신랑 어머니', name: '이혜순', tel: '010-9424-5187' },
-    { role: '신부',      name: '최하영', kakao: 'http://qr.kakao.com/talk/pxR4CJmisDhjQp1dxVNn5O3XjyI-', tel: '010-9991-9523' },
+    { role: '신부',      name: '최하영', tel: '010-9991-9523' },
     { role: '신부 아버지', name: '최칠범', tel: '010-5331-0862' },
     { role: '신부 어머니', name: '전주현', tel: '010-4899-9523' },
   ],
