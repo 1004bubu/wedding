@@ -99,7 +99,7 @@ window.WEDDING_CONFIG = {
    *  bank/number 가 비어 있으면 '준비 중'으로 표시되고 복사 버튼은 숨겨집니다. */
   accounts: {
     groom: [
-      { relation: '신랑',   holder: '우강희', bank: '농협은행', number: '30217744383113' },
+      { relation: '신랑',   holder: '우강희', bank: '농협은행', number: '3021774438311' },
       { relation: '아버지', holder: '우성호', bank: '농협은행', number: '58512011425' },
       { relation: '어머니', holder: '이혜순', bank: '농협은행', number: '22503651207555' },
     ],
