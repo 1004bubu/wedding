@@ -37,7 +37,17 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
   });
 
   const cl = qs('#contacts-list');
+  let prevSide = null;
   C.contacts.forEach(ct => {
+    // 신랑측 ─── 신부측 경계에 구분선 삽입
+    const side = ct.role.startsWith('신부') ? '신부' : '신랑';
+    if (prevSide && side !== prevSide) {
+      const hr = document.createElement('div');
+      hr.style.cssText = 'height:1px;background:#E2DBC8;margin:10px 0;';
+      cl.appendChild(hr);
+    }
+    prevSide = side;
+
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;align-items:center;justify-content:space-between;padding:4px 0;';
 
