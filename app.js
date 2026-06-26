@@ -134,14 +134,28 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
   const grid = qs('#gallery-grid');
   let lbIdx = 0;
 
+  // 파일명 'N-M' 기준으로 넘버 세트별 장수 집계 → 1장뿐인 세트는 행 전체 너비로 배치
+  const groupOf = src => { const m = src.match(/\/(\d+)-\d+\.[^./]+$/); return m ? m[1] : src; };
+  const groupCounts = C.images.gallery.reduce((acc, src) => {
+    const g = groupOf(src); acc[g] = (acc[g] || 0) + 1; return acc;
+  }, {});
+
+  // 사진별 보여줄 영역(object-position) — 얼굴 잘림 방지. 키: 파일명(확장자 제외)
+  const focus = C.images.galleryFocus || {};
+  const nameOf = src => { const m = src.match(/\/([^/]+)\.[^./]+$/); return m ? m[1] : ''; };
+
   C.images.gallery.forEach((src, i) => {
     const wrap = document.createElement('div');
     wrap.style.cssText = 'aspect-ratio:1;overflow:hidden;border-radius:10px;background:#EFEBDD;cursor:pointer;';
+    // 같은 세트에 1장뿐이면 한 행을 전체 너비로 차지 (예: 1-1, 15-1)
+    if (groupCounts[groupOf(src)] === 1) wrap.style.gridColumn = '1 / -1';
 
     const img = document.createElement('img');
     img.src = src; img.alt = `갤러리 ${i + 1}`;
     img.loading = 'lazy'; img.decoding = 'async';
     img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s ease;';
+    const pos = focus[nameOf(src)];
+    if (pos) img.style.objectPosition = pos;   // 지정 없으면 기본 중앙(50% 50%)
     img.onerror = () => { img.src = PH; };
     img.addEventListener('mouseenter', () => { img.style.transform = 'scale(1.06)'; });
     img.addEventListener('mouseleave', () => { img.style.transform = ''; });
@@ -222,6 +236,7 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
       row.style.cssText = 'padding:12px 6px;border-bottom:1px solid #ECE5D4;display:flex;align-items:center;justify-content:space-between;';
 
       const info = document.createElement('div');
+      info.style.textAlign = 'left';
       info.innerHTML = `
         <div style="font-family:'Nanum Myeongjo',serif;font-size:13px;color:#9A9078;margin-bottom:3px;">${acc.relation} · ${acc.holder}</div>
         <div style="font-family:'Nanum Myeongjo',serif;font-size:14px;color:#3B3A34;">${has ? `${acc.bank} ${acc.number}` : '<span style="color:#B3AB97;">준비 중</span>'}</div>
@@ -456,15 +471,27 @@ if (C.bgmSrc) {
   const btn = qs('#bgm-toggle');
   const icon = qs('#bgm-icon');
   audio.src = C.bgmSrc;
+  audio.loop = true;
   btn.style.display = 'flex';
 
   const SVG_PLAY = `<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>`;
   const SVG_MUTE = SVG_PLAY + `<line x1="3" y1="3" x2="21" y2="21" stroke-width="1.6"/>`;
-  icon.innerHTML = SVG_MUTE;
+  const sync = () => { icon.innerHTML = audio.paused ? SVG_MUTE : SVG_PLAY; };
+
+  // 기본값: 재생. 브라우저 자동재생 차단 시 첫 사용자 동작(토글 버튼 제외)에서 시작.
+  const gestures = ['pointerdown', 'touchstart', 'keydown'];
+  const startOnGesture = e => { if (!btn.contains(e.target)) audio.play().catch(() => {}); };
+  const cleanup = () => gestures.forEach(ev => document.removeEventListener(ev, startOnGesture));
+  gestures.forEach(ev => document.addEventListener(ev, startOnGesture, { passive: true }));
+  audio.addEventListener('play', () => { cleanup(); sync(); });
+  audio.addEventListener('pause', sync);
+
+  audio.play().catch(() => {}); // 자동재생 시도 (막히면 위 제스처 핸들러가 시작)
+  sync();
 
   btn.addEventListener('click', () => {
-    if (audio.paused) { audio.play(); icon.innerHTML = SVG_PLAY; }
-    else { audio.pause(); icon.innerHTML = SVG_MUTE; }
+    if (audio.paused) audio.play().catch(() => {});
+    else audio.pause();
   });
 }
 
