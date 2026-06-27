@@ -121,7 +121,8 @@ window.WEDDING_CONFIG = {
     // 길찾기 버튼 (앱키 불필요)
     kakaoUrl: 'https://map.kakao.com/?q=' + encodeURIComponent('루이비스웨딩 중구점'),
     naverUrl: 'https://map.naver.com/v5/search/' + encodeURIComponent('루이비스웨딩 중구'),
-    tmapUrl:  'https://tmap.life/route?name=' + encodeURIComponent('루이비스웨딩 중구'),
+    // Tmap "공유하기"로 생성한 공식 단축링크 (PC 브라우저·모바일 앱 모두 동작)
+    tmapUrl:  'https://tmap.life/5d449ee5',
   },
 
   /* ── 카카오 ────────────────────────────────────────────────────────────
