@@ -1,0 +1,9 @@
+# Firebase 관리자 서비스 계정 키 (절대 커밋 금지!)
+serviceAccountKey.json
+
+# Node
+node_modules/
+package-lock.json
+
+# 내보내기 결과물
+*.csv

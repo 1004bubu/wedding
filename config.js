@@ -119,8 +119,10 @@ window.WEDDING_CONFIG = {
     lat: 37.56060023904431,
     lng: 126.96735289698235,
     // 길찾기 버튼 (앱키 불필요)
-    kakaoUrl: 'https://map.kakao.com/?q=' + encodeURIComponent('루이비스웨딩 중구점'),
-    naverUrl: 'https://map.naver.com/v5/search/' + encodeURIComponent('루이비스웨딩 중구'),
+    //kakaoUrl: 'https://map.kakao.com/?q=' + encodeURIComponent('루이비스웨딩 중구점'),
+    kakaoUrl : 'https://place.map.kakao.com/14921865',
+    //naverUrl: 'https://map.naver.com/v5/search/' + encodeURIComponent('루이비스웨딩 중구'),
+    naverUrl : 'https://naver.me/xyTGNn08',
     // Tmap "공유하기"로 생성한 공식 단축링크 (PC 브라우저·모바일 앱 모두 동작)
     tmapUrl:  'https://tmap.life/5d449ee5',
   },
