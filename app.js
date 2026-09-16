@@ -242,7 +242,76 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 5. 계좌 아코디언
+// 5. 영상
+// ═══════════════════════════════════════════════════════════════════
+if (C.video && C.video.src) {
+  const frame = qs('#video-frame');
+  const v = qs('#invite-video');
+  const playBtn = qs('#video-play');
+  const bgm = qs('#bgm-audio');
+
+  qs('#video').style.display = '';
+  if (C.video.poster) v.poster = C.video.poster;
+  if (C.video.caption) qs('#video-caption').textContent = C.video.caption;
+
+  // 썸네일: poster 이미지가 있으면 그것만 띄우고 영상은 1바이트도 받지 않는다(preload="none").
+  // poster가 없을 때만 preload="metadata" + #t=N 으로 영상의 해당 시점 한 장면을 대신 쓴다.
+  const t = C.video.posterTime;
+  if (C.video.poster) {
+    v.src = C.video.src;
+  } else {
+    v.preload = 'metadata';
+    v.src = (C.video.src.includes('#') || !(t > 0)) ? C.video.src : `${C.video.src}#t=${t}`;
+  }
+
+  // 실제 비율에 맞춰 프레임 조정 (세로 영상으로 교체해도 위아래 여백 없이 표시)
+  v.addEventListener('loadedmetadata', () => {
+    if (v.videoWidth && v.videoHeight) frame.style.aspectRatio = `${v.videoWidth}/${v.videoHeight}`;
+  });
+
+  // 영상 소리와 배경음악이 겹치지 않도록: 재생 중엔 BGM 정지, 끝나면 원래 상태로 복구
+  let bgmWasOn = false;
+  const resumeBgm = () => { if (bgmWasOn) { bgmWasOn = false; bgm.play().catch(() => {}); } };
+  v.addEventListener('play', () => { if (!bgm.paused) { bgmWasOn = true; bgm.pause(); } });
+  v.addEventListener('ended', resumeBgm);
+
+  playBtn.addEventListener('click', () => {
+    playBtn.style.display = 'none';
+    v.controls = true;          // 첫 재생부터 기본 컨트롤(일시정지·전체화면) 노출
+    v.play().catch(() => { playBtn.style.display = ''; v.controls = false; });
+  });
+
+  // 전체화면에 들어가면 인라인 프레임이 '화면 밖'으로 판정된다.
+  // 아래 자동 일시정지가 그때 돌면 영상이 멈추고 BGM이 켜지므로 반드시 제외해야 한다.
+  let fullscreen = false;
+  const isFullscreen = () =>
+    fullscreen ||
+    !!(document.fullscreenElement || document.webkitFullscreenElement) ||
+    !!v.webkitDisplayingFullscreen;   // iOS 사파리 네이티브 플레이어
+
+  // 스크롤로 화면을 벗어나면 일시정지 (소리만 따라다니는 상황 방지)
+  let visible = true;
+  const autoPause = () => {
+    if (!visible && !v.paused && !isFullscreen()) { v.pause(); resumeBgm(); }
+  };
+
+  v.addEventListener('webkitbeginfullscreen', () => { fullscreen = true; });
+  v.addEventListener('webkitendfullscreen', () => { fullscreen = false; autoPause(); });
+  ['fullscreenchange', 'webkitfullscreenchange'].forEach(ev => {
+    document.addEventListener(ev, () => {
+      fullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement);
+      autoPause();   // 전체화면에서 빠져나왔는데 이미 화면 밖이면 그때 멈춘다
+    });
+  });
+
+  new IntersectionObserver(entries => {
+    entries.forEach(e => { visible = e.isIntersecting; });
+    autoPause();
+  }, { threshold: 0 }).observe(frame);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 6. 계좌 아코디언
 // ═══════════════════════════════════════════════════════════════════
 {
   function renderAccList(containerId, list) {
@@ -291,7 +360,7 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 6. 오시는 길 (지도 + 길찾기 버튼)
+// 7. 오시는 길 (지도 + 길찾기 버튼)
 // ═══════════════════════════════════════════════════════════════════
 {
   const { kakaoUrl, naverUrl, tmapUrl } = C.location;
@@ -335,7 +404,7 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 7. RSVP 폼
+// 8. RSVP 폼
 // ═══════════════════════════════════════════════════════════════════
 {
   const formState = { side: null, attending: null, meal: null };
@@ -386,7 +455,7 @@ let fsAdd, fsCollection, fsQuery, fsOrder, fsTimestamp, fsGetDocs;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 8. 방명록
+// 9. 방명록
 // ═══════════════════════════════════════════════════════════════════
 function makeGuestItem({ name, message, date }) {
   const d = document.createElement('div');
@@ -457,7 +526,7 @@ async function loadGuestbook() {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 9. 공유
+// 10. 공유
 // ═══════════════════════════════════════════════════════════════════
 qs('#copy-link').addEventListener('click', () => {
   navigator.clipboard.writeText(location.href).then(() => {
@@ -481,7 +550,7 @@ qs('#share-invite').addEventListener('click', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════
-// 10. BGM
+// 11. BGM
 // ═══════════════════════════════════════════════════════════════════
 if (C.bgmSrc) {
   const audio = qs('#bgm-audio');
@@ -495,9 +564,16 @@ if (C.bgmSrc) {
   const SVG_MUTE = SVG_PLAY + `<line x1="3" y1="3" x2="21" y2="21" stroke-width="1.6"/>`;
   const sync = () => { icon.innerHTML = audio.paused ? SVG_MUTE : SVG_PLAY; };
 
-  // 기본값: 재생. 브라우저 자동재생 차단 시 첫 사용자 동작(토글 버튼 제외)에서 시작.
+  // 기본값: 재생. 브라우저 자동재생 차단 시 첫 사용자 동작에서 시작.
+  // 단, BGM 토글과 영상 섹션 조작(재생·전체화면 버튼 등)은 트리거에서 제외한다.
+  // 제외하지 않으면 영상 컨트롤을 누르는 순간 BGM이 켜져 영상 소리와 겹친다.
+  const videoSection = qs('#video');
   const gestures = ['pointerdown', 'touchstart', 'keydown'];
-  const startOnGesture = e => { if (!btn.contains(e.target)) audio.play().catch(() => {}); };
+  const startOnGesture = e => {
+    if (btn.contains(e.target)) return;
+    if (videoSection && videoSection.contains(e.target)) return;
+    audio.play().catch(() => {});
+  };
   const cleanup = () => gestures.forEach(ev => document.removeEventListener(ev, startOnGesture));
   gestures.forEach(ev => document.addEventListener(ev, startOnGesture, { passive: true }));
   audio.addEventListener('play', () => { cleanup(); sync(); });
@@ -513,7 +589,7 @@ if (C.bgmSrc) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 11. 스크롤 등장 애니메이션
+// 12. 스크롤 등장 애니메이션
 // ═══════════════════════════════════════════════════════════════════
 {
   const obs = new IntersectionObserver((entries) => {
@@ -526,7 +602,7 @@ if (C.bgmSrc) {
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// 12. Firebase 초기화 → 방명록 로드
+// 13. Firebase 초기화 → 방명록 로드
 // ═══════════════════════════════════════════════════════════════════
 async function initFirebase() {
   const fb = C.firebase;

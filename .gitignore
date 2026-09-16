@@ -7,3 +7,5 @@ package-lock.json
 
 # 내보내기 결과물
 *.csv
+# 영상 원본(마스터). 배포에는 압축본 invite_video_web.mp4 를 사용합니다.
+video/invite_video.mp4
